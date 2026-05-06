@@ -584,17 +584,45 @@
     );
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    // Contact form → mailto
-    document.getElementById('contactForm').addEventListener('submit', function(e) {
+    // Contact form → Formspree
+    document.getElementById('contactForm').addEventListener('submit', async function(e) {
       e.preventDefault();
+      const btn = this.querySelector('.btn-send');
       const name = document.getElementById('fName').value.trim();
       const email = document.getElementById('fEmail').value.trim();
       const msg = document.getElementById('fMsg').value.trim();
-      const subject = encodeURIComponent('Povpraševanje od ' + name);
-      const body = encodeURIComponent(
-        'Ime: ' + name + '\r\nEmail: ' + email + '\r\n\r\n' + msg
-      );
-      window.location.href = 'mailto:horvatmatejxx7@gmail.com?subject=' + subject + '&body=' + body;
+
+      btn.textContent = 'Pošiljam...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('https://formspree.io/f/mnjwvkba', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ name, email, message: msg })
+        });
+
+        if (res.ok) {
+          btn.textContent = '✓ Sporočilo poslano!';
+          btn.style.background = '#059669';
+          this.reset();
+          setTimeout(() => {
+            btn.textContent = 'Pošlji sporočilo';
+            btn.style.background = '';
+            btn.disabled = false;
+          }, 4000);
+        } else {
+          throw new Error();
+        }
+      } catch {
+        btn.textContent = 'Napaka — poskusite znova';
+        btn.style.background = '#dc2626';
+        btn.disabled = false;
+        setTimeout(() => {
+          btn.textContent = 'Pošlji sporočilo';
+          btn.style.background = '';
+        }, 3000);
+      }
     });
 
     // Smooth scroll
