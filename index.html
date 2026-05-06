@@ -270,6 +270,34 @@
     .contact-info-label { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.1rem; }
     .contact-info-value { color: var(--text); }
 
+    /* ===== FORM ===== */
+    .form-group { margin-bottom: 1rem; }
+    .form-label { display: block; font-size: 0.78rem; color: var(--muted); margin-bottom: 0.4rem; font-weight: 500; letter-spacing: 0.3px; }
+    .form-group input, .form-group textarea {
+      width: 100%; padding: 0.75rem 1rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text);
+      font-family: 'Inter', sans-serif; font-size: 0.9rem;
+      outline: none; resize: none; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: var(--muted2); }
+    .form-group input:focus, .form-group textarea:focus {
+      border-color: rgba(109,40,217,0.5);
+      box-shadow: 0 0 0 3px rgba(109,40,217,0.08);
+    }
+    .form-group textarea { height: 110px; }
+    .btn-send {
+      width: 100%; padding: 0.85rem;
+      background: var(--accent); border: none; border-radius: 8px;
+      color: white; font-family: 'Inter', sans-serif;
+      font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; margin-top: 0.25rem;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-send:hover { background: var(--accent-light); transform: translateY(-1px); }
+    .btn-send:active { transform: translateY(0); }
+
     /* ===== FOOTER ===== */
     footer {
       border-top: 1px solid var(--border);
@@ -488,8 +516,8 @@
 
       <div class="contact-box">
         <div class="contact-col reveal">
-          <h3>Direktni kontakt</h3>
-          <p>Za vprašanja, ponudbe ali sestanek — pokličite ali pišite.</p>
+          <h3>Kontaktni podatki</h3>
+          <p>Pišite ali pokličite — odgovorim v čim krajšem času.</p>
           <div class="contact-item">
             <div class="contact-icon">📱</div>
             <div class="contact-info-text">
@@ -504,20 +532,35 @@
               <div class="contact-info-value">horvatmatejxx7@gmail.com</div>
             </div>
           </div>
+          <div class="contact-item">
+            <div class="contact-icon">📅</div>
+            <div class="contact-info-text">
+              <div class="contact-info-label">Dosegljivost</div>
+              <div class="contact-info-value">Vsak dan, 16:00 – 21:00</div>
+            </div>
+          </div>
         </div>
 
         <div class="contact-divider"></div>
 
         <div class="contact-col reveal d2">
-          <h3>Delovni čas</h3>
-          <p>Dostopen sem vsak dan. Za hitrejši odgovor pokličite.</p>
-          <div class="contact-item">
-            <div class="contact-icon">📅</div>
-            <div class="contact-info-text">
-              <div class="contact-info-label">Pon – Ned</div>
-              <div class="contact-info-value">16:00 – 21:00</div>
+          <h3>Pošljite sporočilo</h3>
+          <p>Izpolnite obrazec — odpre se vaš email program z že pripravljenim sporočilom.</p>
+          <form id="contactForm">
+            <div class="form-group">
+              <label class="form-label">Vaše ime</label>
+              <input type="text" id="fName" placeholder="Janez Novak" required />
             </div>
-          </div>
+            <div class="form-group">
+              <label class="form-label">Vaš email</label>
+              <input type="email" id="fEmail" placeholder="janez@gmail.com" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Sporočilo</label>
+              <textarea id="fMsg" placeholder="Opišite kaj potrebujete..." required></textarea>
+            </div>
+            <button type="submit" class="btn-send">Pošlji sporočilo</button>
+          </form>
         </div>
       </div>
     </div>
@@ -540,6 +583,19 @@
       { threshold: 0.1 }
     );
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Contact form → mailto
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('fName').value.trim();
+      const email = document.getElementById('fEmail').value.trim();
+      const msg = document.getElementById('fMsg').value.trim();
+      const subject = encodeURIComponent('Povpraševanje od ' + name);
+      const body = encodeURIComponent(
+        'Ime: ' + name + '\r\nEmail: ' + email + '\r\n\r\n' + msg
+      );
+      window.location.href = 'mailto:horvatmatejxx7@gmail.com?subject=' + subject + '&body=' + body;
+    });
 
     // Smooth scroll
     document.querySelectorAll('a[href^="#"]').forEach(a => {
